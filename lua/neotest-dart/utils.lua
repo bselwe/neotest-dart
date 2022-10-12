@@ -6,15 +6,29 @@ local M = {}
 --- trimming is needed to look pretty in summary
 ---@return string
 M.remove_surrounding_quates = function(name, prepare_for_summary)
-  local trimmed = name
-    :gsub("^'''(.*)'''$", '%1')
-    :gsub("^'(.*)'$", '%1')
-    :gsub('^"(.*)"$', '%1')
-    :gsub('^\n(.*)$', '%1')
-  if prepare_for_summary then
-    return trimmed:gsub('^%s+(.*)\n.%s*$', '%1')
+  -- The test name might consist of multiple lines,
+  -- separated by \r or \n. Each name part needs
+  -- to be trimmed separetely.
+  local trimmed_name_parts = {}
+
+  -- Trim each name part.
+  for name_part in name:gmatch("[^\r\n]+") do
+    local trimmed_name_part = name_part
+      :gsub("^'''(.*)'''$", '%1')
+      :gsub("^'(.*)'$", '%1')
+      :gsub('^"(.*)"$', '%1')
+      :gsub('^\n(.*)$', '%1')
+      table.insert(trimmed_name_parts, trimmed_name_part);
   end
-  return trimmed
+
+  -- Join trimmed name parts into a single name.
+  local trimmed_name = table.join(trimmed_name_parts)
+
+  if prepare_for_summary then
+    return trimmed_name:gsub('^%s+(.*)\n.%s*$', '%1')
+  end
+
+  return trimmed_name
 end
 
 --- position id contains information enought to construct test name
