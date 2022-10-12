@@ -12,13 +12,13 @@ M.remove_surrounding_quates = function(name, prepare_for_summary)
   local trimmed_name_parts = {}
 
   -- Trim each name part.
-  for name_part in name:gmatch("[^\r\n]+") do
+  for name_part in name:gmatch('[^\r\n]+') do
     local trimmed_name_part = name_part
       :gsub("^'''(.*)'''$", '%1')
       :gsub("^'(.*)'$", '%1')
       :gsub('^"(.*)"$', '%1')
       :gsub('^\n(.*)$', '%1')
-      table.insert(trimmed_name_parts, trimmed_name_part);
+    table.insert(trimmed_name_parts, trimmed_name_part);
   end
 
   -- Join trimmed name parts into a single name.
