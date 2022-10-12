@@ -6,7 +6,7 @@ local M = {}
 --- trimming is needed to look pretty in summary
 ---@return string
 M.remove_surrounding_quates = function(name, prepare_for_summary)
-  -- The test name might consist of multiple lines,
+  -- The test name might consist of multiple lines
   -- separated by \r or \n. Each name part needs
   -- to be trimmed separetely.
   local trimmed_name_parts = {}
