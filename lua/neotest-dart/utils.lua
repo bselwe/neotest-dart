@@ -13,16 +13,35 @@ M.remove_surrounding_quates = function(name, prepare_for_summary)
 
   -- Trim each name part.
   for name_part in name:gmatch('[^\r\n]+') do
-    local trimmed_name_part = name_part
-      :gsub("^'''(.*)'''$", '%1')
-      :gsub("^'(.*)'$", '%1')
-      :gsub('^"(.*)"$', '%1')
+    local trimmed_name_part = ''
+    local matches = 0
+      
+    -- Trim new lines and surrounding spaces.
+    trimmed_name_part = name_part
       :gsub('^\n(.*)$', '%1')
+      :gsub("^%s*(.-)%s*$", '%1')
+      
+    -- Trim ''' quotes.
+    trimmed_name_part, matches = trimmed_name_part
+      :gsub("^'''(.*)'''$", '%1') 
+    
+    -- Trim ' quotes only if no quotes were trimmed before.
+    if matches == 0 then
+      trimmed_name_part, matches = trimmed_name_part
+        :gsub("^'(.*)'$", '%1') 
+    end
+     
+    -- Trim " quoutes only if no quotes were trimmed before.
+    if matches == 0 then
+      trimmed_name_part, matches = trimmed_name_part
+        :gsub("^\"(.*)\"$", '%1') 
+    end
+
     table.insert(trimmed_name_parts, trimmed_name_part);
   end
 
-  -- Join trimmed name parts into a single name.
-  local trimmed_name = table.join(trimmed_name_parts)
+  -- Concat trimmed name parts into a single name.
+  local trimmed_name = table.concat(trimmed_name_parts, '')
 
   if prepare_for_summary then
     return trimmed_name:gsub('^%s+(.*)\n.%s*$', '%1')
